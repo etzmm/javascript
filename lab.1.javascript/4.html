@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Простые числа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 4px;
+            min-height: 50px;
+        }
+        .prime-number {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 3px;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Поиск простых чисел</h1>
+        
+        <label for="numberInput">Введите число n (больше 1):</label>
+        <input type="number" id="numberInput" min="2" required>
+        
+        <button id="findButton">Найти простые числа</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        'use strict';
+        
+        document.getElementById('findButton').addEventListener('click', function() {
+            const input = document.getElementById('numberInput');
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '';
+            
+            if (!input.value) {
+                resultDiv.innerHTML = '<p class="error">Пожалуйста, введите число</p>';
+                return;
+            }
+            
+            const n = parseInt(input.value);
+            
+            if (n < 2) {
+                resultDiv.innerHTML = '<p class="error">Число должно быть больше 1</p>';
+                return;
+            }
+            
+            const primes = findPrimes(n);
+            
+            if (primes.length === 0) {
+                resultDiv.innerHTML = '<p>В этом диапазоне нет простых чисел</p>';
+            } else {
+                resultDiv.innerHTML = `<p>Простые числа от 2 до ${n}:</p>`;
+                
+                const primesContainer = document.createElement('div');
+                primes.forEach(prime => {
+                    const primeElement = document.createElement('span');
+                    primeElement.className = 'prime-number';
+                    primeElement.textContent = prime;
+                    primesContainer.appendChild(primeElement);
+                });
+                
+                resultDiv.appendChild(primesContainer);
+                resultDiv.innerHTML += `<p>Всего найдено: ${primes.length} простых чисел</p>`;
+            }
+        });
+        
+        function findPrimes(n) {
+            const sieve = new Array(n + 1).fill(true);
+            sieve[0] = false;
+            sieve[1] = false;
+            
+            for (let i = 2; i * i <= n; i++) {
+                if (sieve[i]) {
+                    for (let j = i * i; j <= n; j += i) {
+                        sieve[j] = false;
+                    }
+                }
+            }
+            
+            const primes = [];
+            for (let i = 2; i <= n; i++) {
+                if (sieve[i]) {
+                    primes.push(i);
+                }
+            }
+            
+            return primes;
+        }
+        
+        function isPrime(num) {
+            if (num <= 1) return false;
+            if (num === 2) return true;
+            if (num % 2 === 0) return false;
+            
+            for (let i = 3; i <= Math.sqrt(num); i += 2) {
+                if (num % i === 0) return false;
+            }
+            
+            return true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Считать ворон</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, button {
+            padding: 8px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Считать ворон</h1>
+    <form id="crowForm">
+        <div>
+            <label for="num">Количество ворон:</label>
+            <input type="number" id="num" name="num" min="0" required>
+        </div>
+        
+        <button type="button" id="countBtn">Считать</button>
+    </form>
+
+    <script>
+        'use strict';
+        
+        document.getElementById('countBtn').addEventListener('click', function() {
+            const numInput = document.getElementById('num');
+            
+            if (!numInput.value) {
+                alert('Пожалуйста, введите количество ворон');
+                return;
+            }
+            
+            const num = parseInt(numInput.value);
+            
+            if (num < 0) {
+                alert('Количество ворон не может быть отрицательным');
+                return;
+            }
+            
+            let ending;
+            
+            if (num % 100 >= 11 && num % 100 <= 14) {
+                ending = 'ворон';
+            } else {
+                switch (num % 10) {
+                    case 1:
+                        ending = 'ворона';
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        ending = 'вороны';
+                        break;
+                    default:
+                        ending = 'ворон';
+                }
+            }
+            
+            alert(`На ветке сидит ${num} ${ending}`);
+        });
+    </script>
+</body>
+</html>

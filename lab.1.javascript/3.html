@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ввод числа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ввод числа</h1>
+    <p>Нажмите на ссылку ниже, чтобы перейти на главную страницу</p>
+    
+    <a href="https://example.com" id="mainLink">Получить число</a>
+
+    <script>
+        'use strict';
+        
+        document.getElementById('mainLink').addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            function askNumber() {
+                while (true) {
+                    let input = prompt('Пожалуйста, введите число больше 100:', '');
+                    
+                    if (input === null) {
+                        return false;
+                    }
+                    
+                    let number = Number(input);
+                    
+                    if (number > 100) {
+                        return true;
+                    }
+                    
+                    alert('Пожалуйста, введите число БОЛЬШЕ 100!');
+                }
+            }
+            
+            const numberEntered = askNumber();
+            
+            if (numberEntered) {
+                window.location.href = this.href;
+            } else {
+                const confirmTransition = confirm('Вы не ввели число. Все равно перейти на главную страницу?');
+                
+                if (confirmTransition) {
+                    window.location.href = this.href;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
