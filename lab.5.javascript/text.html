@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Text</title>
+</head>
+<body>
+	<input type="button" id="hider" value="Спрятать текст">
+
+	<div id="text">Текст</div>
+
+	<script>
+    document.getElementById('hider').addEventListener('click', function() {
+        const textElement = document.getElementById('text');
+        const button = this;
+        
+        if (textElement.style.display === 'none') {
+            textElement.style.display = '';
+            button.value = 'Спрятать текст';
+        } else {
+            textElement.style.display = 'none';
+            button.value = 'Показать текст';
+        }
+    });
+	</script>
+</body>
+</html>
