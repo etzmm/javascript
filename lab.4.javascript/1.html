@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Тесты для заданий</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/10.0.0/mocha.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/10.0.0/mocha.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.3.6/chai.min.js"></script>
+</head>
+<body>
+  <div id="mocha"></div>
+
+  <script>
+    mocha.setup('bdd');
+    const expect = chai.expect;
+
+    // Реализация всех заданий
+    class Book {
+      constructor(title, pubYear, price) {
+        this._title = title;
+        this._pubYear = pubYear;
+        this._price = price;
+      }
+
+      show() {
+        return `Название: ${this._title}, Цена: ${this._price}`;
+      }
+
+      get title() {
+        return this._title;
+      }
+
+      set title(value) {
+        if (typeof value === 'string' && value.trim() !== '') {
+          this._title = value;
+        } else {
+          throw new Error('Название не может быть пустым');
+        }
+      }
+
+      get pubYear() {
+        return this._pubYear;
+      }
+
+      set pubYear(value) {
+        if (typeof value === 'number' && value > 0) {
+          this._pubYear = value;
+        } else {
+          throw new Error('Год публикации должен быть положительным числом');
+        }
+      }
+
+      get price() {
+        return this._price;
+      }
+
+      set price(value) {
+        if (typeof value === 'number' && value > 0) {
+          this._price = value;
+        } else {
+          throw new Error('Цена должна быть положительным числом');
+        }
+      }
+
+      static compare(a, b) {
+        return a.pubYear - b.pubYear;
+      }
+    }
+
+    function isEmpty(obj) {
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          return false;
+        }
+      }
+      return Object.getOwnPropertySymbols(obj).length === 0;
+    }
+
+    function getSecondsToday() {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      return Math.floor((now - today) / 1000);
+    }
+
+    function formatDate(date) {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear()).slice(-2);
+      return `${day}.${month}.${year}`;
+    }
+
+    // Тесты
+    describe('Задание 1: Класс Book с методом show', function() {
+      it('должен создавать объект с правильными свойствами', function() {
+        const book = new Book('Test', 2020, 100);
+        expect(book).to.have.property('_title', 'Test');
+        expect(book).to.have.property('_pubYear', 2020);
+        expect(book).to.have.property('_price', 100);
+      });
+
+      it('метод show() должен возвращать правильную строку', function() {
+        const book = new Book('Test', 2020, 100);
+        expect(book.show()).to.equal('Название: Test, Цена: 100');
+      });
+    });
+
+    describe('Задание 2: Геттеры и сеттеры класса Book', function() {
+      let book;
+
+      beforeEach(function() {
+        book = new Book('Test', 2020, 100);
+      });
+
+      it('должен правильно устанавливать и получать title', function() {
+        book.title = 'New Title';
+        expect(book.title).to.equal('New Title');
+        expect(() => { book.title = ''; }).to.throw('Название не может быть пустым');
+      });
+
+      it('должен правильно устанавливать и получать pubYear', function() {
+        book.pubYear = 2021;
+        expect(book.pubYear).to.equal(2021);
+        expect(() => { book.pubYear = -1; }).to.throw('Год публикации должен быть положительным числом');
+      });
+
+      it('должен правильно устанавливать и получать price', function() {
+        book.price = 200;
+        expect(book.price).to.equal(200);
+        expect(() => { book.price = 0; }).to.throw('Цена должна быть положительным числом');
+      });
+    });
+
+    describe('Задание 3: Статический метод Book.compare и сортировка', function() {
+      it('должен правильно сортировать книги по году издания', function() {
+        const books = [
+          new Book('Book A', 2010, 20),
+          new Book('Book B', 2005, 15),
+          new Book('Book C', 2020, 25)
+        ];
+
+        books.sort(Book.compare);
+        expect(books[0]._title).to.equal('Book B');
+        expect(books[1]._title).to.equal('Book A');
+        expect(books[2]._title).to.equal('Book C');
+      });
+    });
+
+    describe('Задание 4: Функция isEmpty', function() {
+      it('должна возвращать true для пустого объекта', function() {
+        expect(isEmpty({})).to.be.true;
+      });
+
+      it('должна возвращать false для непустого объекта', function() {
+        expect(isEmpty({ a: 1 })).to.be.false;
+      });
+
+      it('должна возвращать false для объекта с символами', function() {
+        expect(isEmpty({ [Symbol()]: true })).to.be.false;
+      });
+    });
+
+    describe('Задание 5: Методы addClass и removeClass', function() {
+      let obj;
+
+      beforeEach(function() {
+        obj = {
+          className: 'open menu',
+          
+          addClass(cls) {
+            if (!this.className.split(' ').includes(cls)) {
+              this.className = this.className ? `${this.className} ${cls}` : cls;
+            }
+            return this;
+          },
+          
+          removeClass(cls) {
+            const classes = this.className.split(' ');
+            const index = classes.indexOf(cls);
+            if (index !== -1) {
+              classes.splice(index, 1);
+              this.className = classes.join(' ');
+            }
+            return this;
+          }
+        };
+      });
+
+      it('должен добавлять класс, если его нет', function() {
+        obj.addClass('new');
+        expect(obj.className).to.equal('open menu new');
+      });
+
+      it('не должен добавлять класс, если он уже есть', function() {
+        obj.addClass('open');
+        expect(obj.className).to.equal('open menu');
+      });
+
+      it('должен удалять существующий класс', function() {
+        obj.removeClass('open');
+        expect(obj.className).to.equal('menu');
+      });
+
+      it('не должен изменять className при удалении несуществующего класса', function() {
+        obj.removeClass('nonexistent');
+        expect(obj.className).to.equal('open menu');
+      });
+    });
+
+    describe('Задание 6: JSON преобразование', function() {
+      it('должен правильно преобразовывать объект в JSON и обратно', function() {
+        const obj = {
+          className: 'open menu'
+        };
+        
+        const jsonString = JSON.stringify(obj, null, 2);
+        const obj2 = JSON.parse(jsonString);
+        
+        expect(obj2).to.deep.equal(obj);
+      });
+    });
+
+    describe('Задание 7: Функция getSecondsToday', function() {
+      it('должна возвращать число секунд с начала дня', function() {
+        const now = new Date();
+        const expected = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        
+        expect(getSecondsToday()).to.be.closeTo(expected, 1);
+      });
+    });
+
+    describe('Задание 8: Функция formatDate', function() {
+      it('должна правильно форматировать дату', function() {
+        const date = new Date(2023, 5, 15); // 15 июня 2023
+        expect(formatDate(date)).to.equal('15.06.23');
+      });
+
+      it('должна добавлять ведущие нули', function() {
+        const date = new Date(2023, 0, 1); // 1 января 2023
+        expect(formatDate(date)).to.equal('01.01.23');
+      });
+    });
+
+    mocha.run();
+  </script>
+</body>
+</html>
